@@ -1,0 +1,631 @@
+<?php
+
+/**
+ * @file
+ * Contains lm_custom.module.
+ */
+
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\views\ViewExecutable;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\user\Entity\User;
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\Core\Mail\MailManagerInterface;
+/* use Drupal\Component\Utility\SafeMarkup; */
+use Drupal\Component\Utility\Html;
+use Drupal\lm_custom\Entity\Health;
+use Drupal\lm_custom\Entity\Work;
+use Drupal\lm_custom\Controller\LmCustomController;
+
+
+
+
+/**
+ * Implements hook_theme()
+ */
+function lm_custom_theme($existing, $type, $theme, $path) {
+  return [
+    'departments_page' => [
+      'variables' => [
+        'base_url' => null,
+        'departments' => null,
+        'companies' => null,
+      ]
+    ],
+    'members_page' => [
+      'variables' => [
+        'base_url' => null,
+        'members' => null,
+        'roles' => null,
+        'departments' => null,
+        'works' => null,
+        'companies' => null,
+      ]
+    ],
+    'health_page' => [
+      'variables' => [
+        'base_url' => null,
+        'health_status' => null,
+        'roles' => null,
+        'members' => null,
+      ]
+    ],
+    'dashboard_page' => [
+      'variables' => [
+        'base_url' => null,
+        'members' => null,
+      ]
+    ],
+    'user_settings_page' => [
+      'variables' => [
+        'base_url' => null,
+        'user_id' => null,
+      ]
+    ],
+    'statistics_page' => [
+      'variables' => [
+        'base_url' => null,
+        'member' => null,
+        'roles' => null,
+        'monthly_stats' => null,
+      ]
+    ],
+    'front_page' => [
+      'variables' => [
+        'base_url' => null,
+        'current_user' => null,
+        'members' => null,
+      ]
+    ],
+    'companies_page' => [
+      'variables' => [
+        'base_url' => null,
+        'companies' => null,
+      ]
+    ],
+  ];
+}
+
+
+/**
+ * Implements hook_user_login($account)
+ *
+ * Redirecting user to previous page after logged in by "user/login"
+ * @param $account
+ */
+function lm_custom_user_login($account) {
+  global $base_url;
+  if(strpos($_SERVER['HTTP_REFERER'], 'user/login') !== false) {
+    $response = new RedirectResponse($base_url);
+    $response->send();
+  }
+  return;
+}
+
+
+/**
+ * Implements hook_mail().
+ */
+function lm_custom_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'sick_insert':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      //$message['subject'] = t('Sickdays added: @title', array('@title' => $params['user']), $options);
+      $message['subject'] = t($params['subject'],$options);
+      $message['body'][] = Html::escape($params['message']);
+      break;
+  }
+}
+
+
+/**
+ * Implements hook_cron().
+ */
+function lm_custom_cron() {
+
+  /* $day =  date('d');
+  $month = date('m');
+  $year = date('Y');
+  $startTime = mktime(00, 00, 00, $month, $day, $year);
+  $currentTime = time();
+  $endTime = mktime(02, 00, 00, $month, $day, $year); */
+  $startTime = strtotime(date('Y-m-d'));
+  $endTime = strtotime(date('Y-m-d 02:00:00'));
+  $date = date('Y-m-d');
+  $time_stamp = strtotime($date);
+
+  $user_ids = \Drupal::entityQuery('user')
+    ->condition('roles',['su admin','chief','staff'],'IN')
+    ->execute();
+
+  if($startTime <= $time_stamp && $endTime > $time_stamp){
+    foreach ($user_ids as $user_id){
+      $user = User::load($user_id);
+      $dpt_ids = $user->get('field_department')->getString();
+      $dpt_id = explode(',', $dpt_ids)[0];
+
+      $work_ids = \Drupal::entityQuery('lm_custom_work')
+      ->condition('department_id',$dpt_id)
+      ->execute();
+
+      $works_entity = Work::loadMultiple($work_ids);
+
+      $workhour = '';
+      foreach ($works_entity as $work){
+        $workday = $work->get('workdays')->getString();
+
+        if(date('l') == $workday){
+          $work_start_time = date("H:i", strtotime($work->get('work_start_time')->getString()));
+          $sick_start_time = date("H:i", strtotime($work->get('sick_start_time')->getString()));
+          $workhour = $work->get('workhours')->getString();
+        }
+      }
+
+
+      if(date('l') == 'Monday'){
+        $friday_date = strtotime("previous Friday");
+        $friday_health_id = \Drupal::entityQuery('lm_custom_health')
+          ->condition('user_id',$user_id)
+          ->condition('approval_status','approved')
+          ->condition('sickdates',$friday_date)
+          ->execute();
+          
+		if($friday_health_id){
+			$friday_health = Health::load($friday_health_id);
+			$friday_health_status = $friday_health->get('status')->getString();
+		}
+        if($friday_health_status == 'sick'){
+          $saturday = strtotime("previous Saturday");
+          $sunday = strtotime("previous Sunday");
+          $sickdates = [$saturday,$sunday,$time_stamp];
+
+          foreach ($sickdates as $key => $sickdate){
+            $exist_health_id = \Drupal::entityQuery('lm_custom_health')
+              ->condition('user_id',$user_id)
+              ->condition('sickdates',$sickdate)
+              ->condition('approval_status','approved')
+              ->execute();
+
+            if($exist_health_id){
+              $exist_health = Health::load($exist_health_id);
+              $exist_health_status = $exist_health->get('status')->getString();
+              if($exist_health_status == 'healthy'){
+                $exist_health->set('status', [['value' => 'sick']]);
+                $exist_health->save();
+              }
+              continue;
+            }
+            else{
+              $health = Health::create([
+                'status' => 'sick',
+                'sickdates' => $sickdate,
+                'full_time_sickhours' => $workhour,
+                'approval_status' => 'approved',
+                'user_id' => $user_id,
+              ]);
+              $health->save();
+            }
+          }
+        }
+        /* else{
+          $health_id = \Drupal::entityQuery('lm_custom_health')
+            ->condition('user_id',$user_id)
+            ->condition('sickdates',$time_stamp)
+            ->condition('approval_status','approved')
+            ->execute();
+
+          if(!$health_id){
+            $health = Health::create([
+              'status' => 'healthy',
+              'sickdates' => $time_stamp,
+              'approval_status' => 'approved',
+              'user_id' => $user_id,
+            ]);
+            $health->save();
+          }
+        } */
+      }
+      elseif (date('l') !== 'Saturday' && date('l') !== 'Sunday' && date('l') !== 'Monday'){
+        $previousDay = strtotime("-1 days");
+        $pre_day_health_id = \Drupal::entityQuery('lm_custom_health')
+          ->condition('user_id', $user_id)
+          ->condition('sickdates', $previousDay)
+          ->execute();
+        if($pre_day_health_id){
+          $pre_day_health_id = implode('', $pre_day_health_id);
+
+          $pre_day_health = Health::load($pre_day_health_id);
+          $pre_health_status = $pre_day_health->get('status')->getString();
+        }
+        if($pre_health_status == 'sick'){
+          $health_id = \Drupal::entityQuery('lm_custom_health')
+            ->condition('user_id', $user_id)
+            ->condition('sickdates', $time_stamp)
+            ->execute();
+
+          if($health_id){
+            $health = Health::load($health_id);
+            $health_status = $health->get('status')->getString();
+            if($health_status == 'healthy'){
+              $health->set('status', [['value' => 'sick']]);
+              $health->save();
+            }
+            continue;
+          }
+          else{
+            $health = Health::create([
+              'status' => 'sick',
+              'sickdates' => $time_stamp,
+              'full_time_sickhours' => $workhour,
+              'approval_status' => 'approved',
+              'user_id' => $user_id,
+            ]);
+            $health->save();
+          }
+        }
+
+      }
+    }
+    \Drupal::logger('lm_custom')->notice('Sick day added successfully');
+
+    //send warning mails
+    foreach ($user_ids as $uid){
+      $user = User::load($uid);
+      $dpt_ids = $user->get('field_department')->getString();
+      $dpt_id = explode(',', $dpt_ids)[0];
+
+      $chief_id = \Drupal::entityQuery('user')
+        ->condition('roles','chief')
+        ->condition('field_department',$dpt_id)
+        ->execute();
+
+      if($chief_id){
+        foreach ($chief_id as $cid){
+          $chief = User::load($cid);
+          $chief_mail = $chief->getEmail();
+        }
+      }
+
+      $admin_id = \Drupal::entityQuery('user')
+        ->condition('roles','su admin')
+        ->execute();
+
+      if($admin_id){
+        foreach ($admin_id as $aid){
+          $admin = User::load($aid);
+          $admin_mail = $admin->getEmail();
+        }
+      }
+
+
+      $is_within_law = $user->get('field_within_law')->getString();
+
+      if($is_within_law){
+        $controller = new LmCustomController();
+        $username = $user->getAccountName();
+        $receive_warning_mail = $user->get('field_receive_warning_mail')->getString();
+        $receive_all_mail = $user->get('field_receive_all_mail')->getString();
+
+        if($receive_all_mail){
+          $today_health_id = \Drupal::entityQuery('lm_custom_health')
+            ->condition('user_id', $user_id)
+            ->condition('sickdates', $time_stamp)
+            ->condition('approval_status','approved')
+            ->condition('status','sick')
+            ->execute();
+
+          if($today_health_id){
+            if(strpos('su admin', $receive_all_mail)){
+              $message = 'This person now has been sick: '.$username;
+              $subject = 'Sick day notification';
+              $to = $admin_mail;
+              $controller->sendMail($username, $message, $to, $subject);
+            }
+            if(strpos('chief', $receive_all_mail)){
+              $message = 'This person now has been sick: '.$username;
+              $subject = 'Sick day notification';
+              $to = $chief_mail;
+              $controller->sendMail($username, $message, $to, $subject);
+            }
+          }
+        }
+        elseif ($receive_warning_mail){
+          $health_ids = \Drupal::entityQuery('lm_custom_health')
+          ->condition('user_id',$user_id)
+          ->condition('approval_status', 'approved')
+          ->condition('status','sick')
+          ->execute();
+
+          $fullTimeSick = [];
+          $partTimeSick = [];
+          if($health_ids){
+            foreach ($health_ids as $health_id){
+              $health = Health::load($health_id);
+              $fullSick = $health->get('full_time_sickhours')->getString();
+              $partSick = $health->get('part_time_sickhours')->getString();
+              if($fullSick){
+                $fullTimeSick[] = $fullSick;
+              }
+              elseif($partSick){
+                $partTimeSick[] = $partSick;
+              }
+            }
+          }
+
+          $sickDays = count($fullTimeSick);
+          $partTimeHours = $controller->addHours($partTimeSick);
+          $fullDays = round((int)$partTimeHours/(int)$workhour);
+          $sickDays = (int)$sickDays + (int)$fullDays;
+
+          if($sickDays == 115 || $sickDays == 120){
+            if(strpos('su admin', $receive_warning_mail)){
+              $message = '"'.$username.'" This person now has been sick for '.$sickDays.' days';
+              $subject = 'Sick day warning mail';
+              $to = $admin_mail;
+              $controller->sendMail($username, $message, $to, $subject);
+            }
+            if(strpos('chief', $receive_warning_mail)){
+              $message = '"'.$username.'" This person now has been sick for '.$sickDays.' days';
+              $subject = 'Sick day warning mail';
+              $to = $chief_mail;
+              $controller->sendMail($username, $message, $to, $subject);
+            }
+          }
+        }
+
+      }
+    }
+  }
+
+}
+
+
+
+/* function lm_custom_update_8803() {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+  $storage_definition = $manager->getFieldStorageDefinition('sickdates', 'lm_custom_health');
+  $storage_definition->setLabel(t('Sickdates'));
+  $storage_definition->setSettings(['max_length' => 255]);
+  $manager->updateFieldStorageDefinition($storage_definition);
+}
+
+
+function lm_custom_update_8804() {
+  $fields = BaseFieldDefinition::create('datetime')
+  ->setLabel(t('Sickdates'))
+  ->setDescription(t('Sickdates of the Health entity.'))
+  ->setCardinality('-1')
+  ->setDefaultValue('')
+  ->setSetting('datetime_type', 'datestamp')
+  ->setDisplayOptions('view', [
+    'label' => 'hidden',
+    'type' => 'string',
+    'weight' => -4,
+  ])
+  ->setDisplayOptions('form', [
+    'type' => 'datetime_default',
+    'settings' => array(
+      'display_label' => false,
+    ),
+    'weight' => 0,
+  ])
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('sickdates','lm_custom_health','lm_custom_health',$fields);
+
+}
+
+function lm_custom_update_8805() {
+  $fields = BaseFieldDefinition::create('string')
+  ->setLabel(t('Sicktime'))
+  ->setDescription(t('Sicktime of the Health entity.'))
+  ->setSettings(array(
+    'default_value' => '',
+    'max_length' => 255,
+    'text_processing' => 0,
+  ))
+  ->setDisplayOptions('view', array(
+    'label' => 'above',
+    'type' => 'string',
+    'weight' => -6,
+  ))
+  ->setDisplayOptions('form', array(
+    'type' => 'string_textfield',
+    'weight' => -6,
+  ))
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('sicktime','lm_custom_health','lm_custom_health',$fields);
+
+}
+
+function lm_custom_update_8806() {
+  $fields = BaseFieldDefinition::create('string')
+  ->setLabel(t('Part time Sickhours'))
+  ->setDescription(t('Part time Sickhours of the Health entity.'))
+  ->setSettings(array(
+    'default_value' => '',
+    'max_length' => 255,
+    'text_processing' => 0,
+  ))
+  ->setDisplayOptions('view', array(
+    'label' => 'above',
+    'type' => 'string',
+    'weight' => -6,
+  ))
+  ->setDisplayOptions('form', array(
+    'type' => 'string_textfield',
+    'weight' => -6,
+  ))
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('part_time_sickhours','lm_custom_health','lm_custom_health',$fields);
+
+}
+
+function lm_custom_update_8807() {
+  $fields = BaseFieldDefinition::create('string')
+  ->setLabel(t('Full time Sickhours'))
+  ->setDescription(t('Full time Sickhours of the Health entity.'))
+  ->setSettings(array(
+    'default_value' => '',
+    'max_length' => 255,
+    'text_processing' => 0,
+  ))
+  ->setDisplayOptions('view', array(
+    'label' => 'above',
+    'type' => 'string',
+    'weight' => -6,
+  ))
+  ->setDisplayOptions('form', array(
+    'type' => 'string_textfield',
+    'weight' => -6,
+  ))
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('full_time_sickhours','lm_custom_health','lm_custom_health',$fields);
+
+}
+
+
+function lm_custom_update_8808() {
+  $fields = BaseFieldDefinition::create('integer')
+  ->setLabel(t('Health hits'))
+  ->setDescription(t('Health hits count of the Health entity.'))
+  ->setSettings([
+    'max_length' => 10,
+  ])
+  ->setDefaultValue('')
+  ->setDisplayOptions('view', [
+    'label' => 'hidden',
+    'type' => 'integer',
+    'weight' => -4,
+  ])
+  ->setDisplayOptions('form', [
+    'type' => 'hidden',
+    'weight' => -4,
+  ])
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('health_hits','lm_custom_health','lm_custom_health',$fields);
+
+}
+
+function lm_custom_update_8809(){
+  $fields['agreement_id'] = BaseFieldDefinition::create('entity_reference')
+    ->setLabel(t('Agreement'))
+    ->setDescription(t('The id of the associated agreement.'))
+    ->setSetting('target_type', 'lm_custom_agreement')
+    ->setSetting('handler', 'default')
+    ->setDisplayOptions('view', array(
+      'label' => 'above',
+      'type' => 'entity_reference_label',
+      'weight' => -3,
+    ))
+    ->setDisplayOptions('form', array(
+      'type' => 'entity_reference_autocomplete',
+      'settings' => array(
+        'match_operator' => 'CONTAINS',
+        'size' => 60,
+        'autocomplete_type' => 'tags',
+        'placeholder' => '',
+      ),
+      'weight' => -3,
+    ))
+    ->setDisplayConfigurable('form', TRUE)
+    ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('agreement_id','lm_custom_health','lm_custom_health',$fields);
+}
+function lm_custom_update_88010(){
+  $current_field_storage_definitions = \Drupal::entityManager()->getFieldStorageDefinitions('lm_custom_health');
+  \Drupal::service('entity.last_installed_schema.repository')->setLastInstalledFieldStorageDefinitions('lm_custom_health', $current_field_storage_definitions);
+
+}
+
+function lm_custom_update_88011() {
+
+  $current_field_storage_definitions = \Drupal::entityManager()->getFieldStorageDefinitions('lm_custom_health');
+  \Drupal::service('entity.last_installed_schema.repository')->setLastInstalledFieldStorageDefinitions('lm_custom_health', $current_field_storage_definitions);
+
+}
+
+function  lm_custom_update_88012() {
+
+  $current_field_storage_definitions = \Drupal::entityManager()->getFieldStorageDefinitions('lm_custom_agreement');
+  \Drupal::service('entity.last_installed_schema.repository')->setLastInstalledFieldStorageDefinitions('lm_custom_agreement', $current_field_storage_definitions);
+
+
+}
+
+function lm_custom_update_88013() {
+
+  $current_field_storage_definitions = \Drupal::entityManager()->getFieldStorageDefinitions('lm_custom_agreement');
+  \Drupal::service('entity.last_installed_schema.repository')->setLastInstalledFieldStorageDefinitions('lm_custom_agreement', $current_field_storage_definitions);
+}
+
+function lm_custom_update_88014() {
+  $fields['ag_status'] = BaseFieldDefinition::create('string')
+  ->setLabel(t('Agreement status'))
+  ->setDescription(t('Status of the Agreement entity.'))
+  ->setSettings(array(
+    'default_value' => '',
+    'max_length' => 255,
+    'text_processing' => 0,
+  ))
+  ->setDisplayOptions('view', array(
+    'label' => 'above',
+    'type' => 'string',
+    'weight' => -6,
+  ))
+  ->setDisplayOptions('form', array(
+    'type' => 'string_textfield',
+    'weight' => -6,
+  ))
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('ag_status','lm_custom_agreement','lm_custom_agreement',$fields);
+}
+
+function lm_custom_update_88015() {
+  $fields['approval_status'] = BaseFieldDefinition::create('string')
+  ->setLabel(t('Approval Status'))
+  ->setDescription(t('Approval Status of the Health entity.'))
+  ->setSettings(array(
+    'default_value' => '',
+    'max_length' => 255,
+    'text_processing' => 0,
+  ))
+  ->setDisplayOptions('view', array(
+    'label' => 'above',
+    'type' => 'string',
+    'weight' => -6,
+  ))
+  ->setDisplayOptions('form', array(
+    'type' => 'string_textfield',
+    'weight' => -6,
+  ))
+  ->setDisplayConfigurable('form', TRUE)
+  ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('approval_status','lm_custom_health','lm_custom_health',$fields);
+} */
+
+?>

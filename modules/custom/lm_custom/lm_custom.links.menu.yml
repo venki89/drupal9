@@ -1,0 +1,40 @@
+entity.lm_custom_health.collection:
+  title: 'LM Custom: Health Listing'
+  route_name: entity.lm_custom_health.collection
+  description: 'List Health Data'
+  weight: 10
+lm_custom_health.admin.structure.settings:
+  title: Health Settings
+  description: 'Configure Health entity'
+  route_name:  lm_custom.health_settings
+  parent: system.admin_structure
+entity.lm_custom_work.collection:
+  title: 'LM Custom: Work Listing'
+  route_name: entity.lm_custom_work.collection
+  description: 'List Work Data'
+  weight: 10
+lm_custom_work.admin.structure.settings:
+  title: Work Settings
+  description: 'Configure Work entity'
+  route_name:  lm_custom.work_settings
+  parent: system.admin_structure
+entity.lm_custom_agreement.collection:
+  title: 'LM Custom: Agreement Listing'
+  route_name: entity.lm_custom_agreement.collection
+  description: 'List Agreement Data'
+  weight: 10
+lm_custom_agreement.admin.structure.settings:
+  title: Agreement Settings
+  description: 'Configure Agreement entity'
+  route_name:  lm_custom.agreement_settings
+  parent: system.admin_structure    
+entity.lm_custom_company.collection:
+  title: 'LM Custom: Company Listing'
+  route_name: entity.lm_custom_company.collection
+  description: 'List Company Data'
+  weight: 10
+lm_custom_company.admin.structure.settings:
+  title: Company Settings
+  description: 'Configure Company entity'
+  route_name:  lm_custom.company_settings
+  parent: system.admin_structure      

@@ -1,0 +1,99 @@
+{% if ('chief' == roles) or ('administrator' == roles) or ('su admin' == roles)  %}
+<div id="statistics-page" class="statistics-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="stats-member" type="hidden" value="{{ member|json_encode }}">
+	<input id="monthly-stats" type="hidden" value="{{ monthly_stats|json_encode }}">
+	<div id="user-info" class="user-info col-1 wrapper" >
+		<h1 id="user-name" class="hl">{{ member.name }}</h1>
+		<div id="user-profile">
+			<div id="sick-status"><h2>{{ member.health_status ? member.health_status : 'healthy' }}</h2><span class="hl">Status</span></div>
+			<div id="id-number"><h2>{{ member.id_number }}</h2><span class="hl">ID-number</span></div>
+			<div id="department"><h2>{{ member.departments }}</h2><span class="hl">Department</span></div>
+			{% if member.ag_user %}
+				<div id="agreement">
+					<button class="ag-expand" data-ag-uid="{{member.user_id}}" data-ag="{{member.ag_user|json_encode}}">Expand</button>
+					<div class="hl">Special Agreement</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+	<div class="back-to-dash"><a href="{{ base_url }}/dashboard">Back to Dashboard</a></div>
+	<div class="col-2">
+		<div id="excel-data-wrapper" class="excel-data-wrapper wrapper" style="display:flex;">
+			<div>
+				<span>{{member.last_year.day}}</span>
+				<input type="date" id="ex-from" class="sick-days-start" value="{{member.last_year.date}}">
+			</div>
+			<div>
+				<span>{{member.today.day}}</span>
+				<input type="date" id="ex-to" class="sick-days-end" value="{{member.today.date}}">
+			</div>
+			<input type="button" id="ex-ok-btn" data-uid="{{member.user_id}}" value="Ok">
+			<a id="dlink" style="display:none;"></a>
+			<div class="top-right">
+				<img class="print-icon" src="{{base_url}}/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15" style="cursor:pointer;padding-right:10px;">
+				<button type="button" id="ex-download" class="ex-download">Download Excel</button>
+			</div>
+		</div>
+		<div id="stats-info" class="stats-info wrapper">
+			<div class="sick-info">
+				<div id="stats-last-sick"><div>{{ member.last_sick_date ? member.last_sick_date : '-' }}</div><span class="red">Last sick day</span></div>
+				<div id="stats-sickdays"><div>{{ member.sickdays }} days</div><span class="red">Sick days</span></div>
+			</div>
+			<div id="health-curve" class="health-curve col-2">
+				<h2>Health Curve</h2>
+				<h4>Sick days</h4>
+				<div id="chart"></div>
+			</div>
+		</div>
+	</div>	
+	<div class="loading-gif"></div>
+	<div id="ag-modal" class="lm-hidden">
+		<div class="close-btn">X</div>
+		<h2>Special Agreement</h2>
+		<div class="ag-ep-user">
+			<table id="ag-ep-user-table" class="tablesorter">
+				<tbody>
+						{% if member.ag_user %}
+							<tr class="ag-user-{{member.user_id}} lm-hidden">
+								<td class="ag-user">{{ member.name }}</td>
+								<td class="ag-user-id-number">{{ member.id_number }}</td>
+							</tr>
+						{% endif %}
+				</tbody>
+			</table>
+			<div class="ag-data">
+				<table id="stats-ag-data-table" class="tablesorter">
+					<thead>
+						<tr>
+							<th>Date from</th>
+							<th>Date to</th>
+							<th>Time from</th>
+							<th>Time to</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if member.ag_user %}
+								{% for key, ag in member.ag_user %} 
+								<tr class="ag-data-user-{{member.user_id}} lm-hidden">
+									<td class="ag-date-from">{{ ag.ag_day_from }}</td>
+									<td class="ag-date-to">{{ ag.ag_day_to }}</td>
+									<td class="ag-time-from">{{ ag.ag_time_from }}</td>
+									<td class="ag-time-to">{{ ag.ag_time_to }}</td>
+									<td>
+										<img class="edit-icon edit-ag" src="{{base_url}}/modules/custom/lm_custom/images/edit_icon.png" width="12" data-ag-id="{{ key }}">
+										<img class="delete-icon delete-ag" src="{{base_url}}/modules/custom/lm_custom/images/delete_icon.png" width="12" data-ag-id="{{ key }}">
+									</td>
+								</tr>
+								{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% else %}
+<h1>Access Denied</h1>
+{% endif %}

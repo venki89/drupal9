@@ -1,0 +1,36 @@
+lm_custom.health_add:
+  # Which route will be called by the link
+  route_name: lm_custom.health_add
+  title: 'Add Health'
+  # Where will the link appear, defined by route name.
+  appears_on:
+    - entity.lm_custom_health.collection
+    - entity.lm_custom_health.canonical
+  
+lm_custom.work_add:
+  # Which route will be called by the link
+  route_name: lm_custom.work_add
+  title: 'Add Work'
+  # Where will the link appear, defined by route name.
+  appears_on:
+    - entity.lm_custom_work.collection
+    - entity.lm_custom_work.canonical
+
+lm_custom.agreement_add:
+  # Which route will be called by the link
+  route_name: lm_custom.agreement_add
+  title: 'Add Agreement'    
+  # Where will the link appear, defined by route name.
+  appears_on:
+    - entity.lm_custom_agreement.collection
+    - entity.lm_custom_agreement.canonical
+
+lm_custom.company_add:
+  # Which route will be called by the link
+  route_name: lm_custom.company_add
+  title: 'Add Company'    
+  # Where will the link appear, defined by route name.
+  appears_on:
+    - entity.lm_custom_company.collection
+    - entity.lm_custom_company.canonical
+  

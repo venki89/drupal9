@@ -1,0 +1,71 @@
+<div id="companies-page" class="companies-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="companies" type="hidden" value="{{ companies|json_encode }}">
+	<div class="companies-container">
+		<div class="find-companies autocomplete">
+			<input type="text" id="search-company" class="search-company" placeholder="Find a company">
+			<button id="add-company-pop">+ Add company</button>
+		</div>
+		<div class="col-2 companies-data">
+			<table id="companies-table" class="tablesorter">
+				<thead>
+					<tr>
+						<th>Company</th>
+						<th>Member Since</th>
+						<th>Members</th>
+						<th>Stats</th>
+						<th>Edit</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for cid, company in companies %}
+						<tr>
+							<td>{{ company.cp_name }}</td>
+							<td>{{ company.cp_since }}</td>
+							<td>{{ company.cp_members }}</td>
+							<td><a class="button cp-expand" href="{{base_url}}/dashboard?cid={{cid}}" data-cid="{{cid}}">Expand</a></td>
+							<td>
+								<img class="edit-icon edit-company-pop" src="{{base_url}}/modules/custom/lm_custom/images/edit_icon.png" width="12" data-cid="{{ cid }}" data-cp="{{ company|json_encode }}">
+								<img class="delete-icon delete-company" src="{{base_url}}/modules/custom/lm_custom/images/delete_icon.png" width="12" data-cid="{{ cid }}" data-cp-name="{{ company.cp_name }}">
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>	
+</div>
+
+<div id="company-modal" class="cp-modal lm-hidden">
+		<div class="cp-modal__contents">
+			<div class="close-btn">X</div>
+			<h2 style="text-align:center;">Add Company</h2>
+			<div class="cp-form-wrapper">
+				<form method="post" action="#">
+					<div class="form-group">
+						<label for="cp-name">Company name</label><br>
+						<input id="cp-name" name="cp-name" class="cp-name" placeholder="Enter company name">
+					</div>
+					<div class="form-group">
+						<label for="cp-email">Company email</label><br>
+						<input id="cp-email" name="cp-email" class="cp-email" placeholder="Enter company email">
+					</div>
+					<div class="form-group">
+						<label for="cp-phone">Company phone</label><br>
+						<input id="cp-phone" name="cp-phone" class="cp-phone" placeholder="Enter company phone">
+					</div>
+					<div class="form-group">
+						<label for="cp-address">Company address</label><br>
+						<input id="cp-address" name="cp-address" class="cp-address" placeholder="Enter company address">
+					</div>
+					<div class="form-group">
+						<label for="cp-card">Credit card</label><br>
+						<input id="cp-card" name="cp-card" class="cp-card" placeholder="Enter credit card">
+					</div>
+					<input id="add-cp-btn" type="submit" value="Save">
+					<input id="edit-cp-btn" class="lm-hidden" type="submit" data-cid="" data-cp="" value="Save" >
+				</form>
+				<div class="loading-gif"></div>
+			</div>
+		</div>	
+	</div>

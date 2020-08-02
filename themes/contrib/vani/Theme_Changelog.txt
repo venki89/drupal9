@@ -1,0 +1,22 @@
++===============================+
+Version 8.1.0
+22 March, 2020
++===============================+
+# Initial version
+
+
++===============================+
+Version 8.1.1
+01 May, 2020
++===============================+
+# Fixed all known bugs.
+# Theme is not compatible on Drupal 9 also.
+
+
++===============================+
+Version 8.1.2
+23 May, 2020
++===============================+
+# Fixed slider image upload issue.
+# Fixed minor know bugs.
+# Tested theme on Drupal version 8.8.6 and 9.0.0-rc1

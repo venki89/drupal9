@@ -1,0 +1,44 @@
+view health entity:
+  title: 'View Health entity'
+add health entity:
+  title: 'Add Health entity'
+edit health entity:
+  title: 'Edit Health Entity'
+delete health entity:
+  title: 'Delete Health entity'
+administer health entity:
+  title: 'Administer Health entity'
+  restrict access: TRUE
+view work entity:
+  title: 'View Work entity'
+add work entity:
+  title: 'Add Work entity'
+edit work entity:
+  title: 'Edit Work Entity'
+delete work entity:
+  title: 'Delete Work entity'
+administer work entity:
+  title: 'Administer Work entity'
+  restrict access: TRUE  
+view agreement entity:
+  title: 'View Agreement entity'
+add agreement entity:
+  title: 'Add Agreement entity'
+edit agreement entity:
+  title: 'Edit Agreement Entity'
+delete agreement entity:
+  title: 'Delete Agreement entity'
+administer agreement entity:
+  title: 'Administer Agreement entity'
+  restrict access: TRUE    
+view company entity:
+  title: 'View Company entity'
+add company entity:
+  title: 'Add Company entity'
+edit company entity:
+  title: 'Edit Company Entity'
+delete company entity:
+  title: 'Delete Company entity'
+administer company entity:
+  title: 'Administer Company entity'
+  restrict access: TRUE  

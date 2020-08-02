@@ -1,0 +1,83 @@
+health.settings_tab:
+  route_name: lm_custom.health_settings
+  title: Settings
+  base_route: lm_custom.health_settings
+
+health.view:
+  route_name: entity.lm_custom_health.canonical
+  base_route: entity.lm_custom_health.canonical
+  title: View
+
+health.page_edit:
+  route_name: entity.lm_custom_health.edit_form
+  base_route: entity.lm_custom_health.canonical
+  title: Edit
+
+health.delete_confirm:
+  route_name:  entity.lm_custom_health.delete_form
+  base_route:  entity.lm_custom_health.canonical
+  title: Delete
+  weight: 10
+
+work.settings_tab:
+  route_name: lm_custom.work_settings
+  title: Settings
+  base_route: lm_custom.work_settings
+
+work.view:
+  route_name: entity.lm_custom_work.canonical
+  base_route: entity.lm_custom_work.canonical
+  title: View
+
+work.page_edit:
+  route_name: entity.lm_custom_work.edit_form
+  base_route: entity.lm_custom_work.canonical
+  title: Edit
+
+work.delete_confirm:
+  route_name:  entity.lm_custom_work.delete_form
+  base_route:  entity.lm_custom_work.canonical
+  title: Delete
+  weight: 10  
+  
+agreement.settings_tab:
+  route_name: lm_custom.agreement_settings
+  title: Settings
+  base_route: lm_custom.agreement_settings
+
+agreement.view:
+  route_name: entity.lm_custom_agreement.canonical
+  base_route: entity.lm_custom_agreement.canonical
+  title: View
+
+agreement.page_edit:
+  route_name: entity.lm_custom_agreement.edit_form
+  base_route: entity.lm_custom_agreement.canonical
+  title: Edit
+
+agreement.delete_confirm:
+  route_name:  entity.lm_custom_agreement.delete_form
+  base_route:  entity.lm_custom_agreement.canonical
+  title: Delete
+  weight: 10  
+  
+company.settings_tab:
+  route_name: lm_custom.company_settings
+  title: Settings
+  base_route: lm_custom.company_settings
+
+company.view:
+  route_name: entity.lm_custom_company.canonical
+  base_route: entity.lm_custom_company.canonical
+  title: View
+
+company.page_edit:
+  route_name: entity.lm_custom_company.edit_form
+  base_route: entity.lm_custom_company.canonical
+  title: Edit
+
+company.delete_confirm:
+  route_name:  entity.lm_custom_company.delete_form
+  base_route:  entity.lm_custom_company.canonical
+  title: Delete
+  weight: 10    

@@ -1,0 +1,140 @@
+<div id="dashboard-page" class="dashboard-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="members" type="hidden" value="{{ members|json_encode }}">
+	<div class="dashboard-container">
+		<div class="find-users autocomplete">
+			<input type="text" id="search-user" class="search-user" placeholder="Find a user by name or id number">
+		</div>
+		<div class="col-2 dashboard-data">
+			<table id="user-table" class="tablesorter">
+				<thead>
+					<tr>
+						<th>User</th>
+						<th>ID number</th>
+						<th>Department</th>
+						<th>Sick days</th>
+						<th>Status</th>
+						<th>Special Agreement</th>
+						<th>Stats</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for member in members|sort %}
+						<tr>
+							{% if member.role == 'administrator' %}
+								<td class="border-blue">{{ member.name }}</td>
+							{% elseif member.role == 'chief' %}
+								<td class="border-grey">{{ member.name }}</td>
+							{% else %}	
+								<td class="border-orange">{{ member.name }}</td>
+							{% endif %}	
+							
+							<td>{{ member.id_number }}</td>
+							<td>{{ member.department }}</td>
+							
+							{% if member.is_within_law %}
+								{% if member.sickdays <= 40 %}
+									<td class="hl-sick-green">{{ member.sickdays }} days</td>
+								{% elseif member.sickdays > 40 and member.sickdays <= 80 %} 
+									<td class="hl-sick-yellow">{{ member.sickdays }} days</td>
+								{% elseif member.sickdays > 80 %}
+									<td class="hl-sick-red">{{ member.sickdays }} days</td>
+								{% endif %}
+							{% else %}
+								<td class="hl-sick-grey">{{ member.sickdays }} days</td>
+							{% endif %}
+								
+							<td class="{{member.status == 'Sick' ? 'highlight-sick' : 'highlight-healthy'}}">{{ member.status }}</td>
+							
+							{% if member.ag_user %}
+								<td><button class="ag-expand" data-ag-uid="{{member.user_id}}" data-ag="{{member.ag_user|json_encode}}">Expand</button></td>
+							{% else %}
+								<td></td>	
+							{% endif %}
+							
+							{#{% if 'administrator' in member.roles %}#}
+								<td><a class="stats-expand" href="{{base_url}}/statistics/{{member.user_id}}" data-user-id="{{ member.user_id }}" data-member="{{ member|json_encode }}">Expand</a></td>
+							{#{% else %}
+								<td></td>	
+							{% endif %}#}	
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="ag-modal" class="lm-hidden">
+		<div class="close-btn">X</div>
+		<img class="print-icon" src="http://localhost/drupal8/web/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15">
+		<h2>Special Agreement</h2>
+		<div class="ag-ep-user">
+			<table>
+				<tbody>
+					{% for key, member in members %}
+						{% if member.ag_user %}
+						<tr class="ag-user-{{key}} lm-hidden">
+							<td class="ag-user">{{ member.name }}</td>
+							<td class="ag-user-id-number">{{ member.id_number }}</td>
+						</tr>
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="ag-data">
+				<table id="ag-data-table" class="tablesorter">
+					<thead>
+						<tr>
+							<th>Date from</th>
+							<th>Date to</th>
+							<th>Time from</th>
+							<th>Time to</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for id, member in members %}
+								{% for key, ag in member.ag_user %} 
+								<tr class="ag-data-user-{{id}} lm-hidden">
+									<td class="ag-date-from">{{ ag.ag_day_from }}</td>
+									<td class="ag-date-to">{{ ag.ag_day_to }}</td>
+									<td class="ag-time-from">{{ ag.ag_time_from }}</td>
+									<td class="ag-time-to">{{ ag.ag_time_to }}</td>
+									<td>
+										<img class="edit-icon edit-ag" src="{{base_url}}/modules/custom/lm_custom/images/edit_icon.png" width="12" data-ag-id="{{ key }}">
+										<img class="delete-icon delete-ag" src="{{base_url}}/modules/custom/lm_custom/images/delete_icon.png" width="12" data-ag-id="{{ key }}">
+									</td>
+								</tr>
+								{% endfor %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{# statistics page #}
+{#<div id="statistics-page" class="statistics-page" style="display:none;">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<div id="user-info" class="user-info" >
+		<h1 id="user-name">{{ member.name }}</h1>
+		<div id="user-profile">
+			<div id="sick-status"><div>{{ member.status }}</div><span>Status</span></div>
+			<div id="id-number"><div>{{ member.id_number }}</div><span>ID-number</span></div>
+			<div id="department"><div>{{ member.department }}</div><span>Department</span></div>
+		</div>
+	</div>
+	<div id="excel-data-wrapper" class="excel-data-wrapper">
+		<input type="date" id="ex-from" class="sick-days-start">
+		<input type="date" id="ex-to" class="sick-days-end">
+		<input type="button" id="ex-ok-btn" value="Ok">
+		<button type="button" id="ex-download" class="ex-download">Download Excel</button>
+	</div>
+	<div id="stats-info" class="stats-info">
+		<div id="stats-last-sick"><div>{{ member.last_sick_date }}</div><span>Last sick day</span></div>
+		<div id="stats-sickdates"><div>{{ member.sickdates }}</div><span>Sick days</span></div>
+		<div id="stats-work-days"><div>{{ member.sickdates }}</div><span>Total working days</span></div>
+		<div id="health-curve" class="health-curve"></div>
+	</div>
+	<div class="loading-gif"></div>
+</div>#}

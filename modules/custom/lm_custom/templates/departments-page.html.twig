@@ -1,0 +1,82 @@
+<div class="departments-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="companies" type="hidden" value="{{ companies|json_encode }}">
+	<div class="container-wrapper">
+		<div class="col-1 add-department">
+			<h1>Add or edit a department</h1>
+			<h1>Department</h1>
+			<input id="dpt-name" type="text" value="">
+			<h1>Company</h1>
+			<select id="dpt-cp" name="dpt-cp">
+				{% for cid, company in companies %}
+					<option value="{{ cid }}">{{ company.cp_name }}</option>
+				{% endfor %}
+			</select>
+			<h1>Working hours</h1>
+			<table id="department-table">
+				<thead>
+					<tr>
+						<th>Working hours per week</th>
+						<th>Work starts at</th>
+						<th>Register full time sick before</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="sync">
+						<td><input type="checkbox" name="sync-hours" id="sync-hours"><label for="sync-hours">Sync all days</label></td>
+						<td><input type="checkbox" name="sync-work-start" id="sync-work-start"><label for="sync-work-start">Sync all</label></td>
+						<td><input type="checkbox" name="sync-sick-start" id="sync-sick-start"><label for="sync-sick-start">Sync all</label></td>
+					</tr>
+					<tr class="work-table-value">
+						<td><div class="work-day">Monday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+						<td><span><input type="time" class="input-wk-st"></span></td>
+						<td><span><input type="time" class="input-sk-st"></span></td>
+					</tr>
+					<tr class="work-table-value">
+						<td><div class="work-day">Tuesday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+						<td><span><input type="time" class="input-wk-st"></span></td>
+						<td><span><input type="time" class="input-sk-st"></span></td>
+					</tr>
+					<tr class="work-table-value">
+						<td><div class="work-day">Wednesday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+						<td><span><input type="time" class="input-wk-st"></span></td>
+						<td><span><input type="time" class="input-sk-st"></span></td>
+					</tr>
+					<tr class="work-table-value">
+						<td><div class="work-day">Thursday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+						<td><span><input type="time" class="input-wk-st"></span></td>
+						<td><span><input type="time" class="input-sk-st"></span></td>
+					</tr>
+					<tr class="work-table-value">
+						<td><div class="work-day">Friday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+						<td><span><input type="time" class="input-wk-st"></span></td>
+						<td><span><input type="time" class="input-sk-st"></span></td>
+					</tr>
+					<tr>
+						<td colspan="2">Total work day per week</td>
+						<td colspan="1" style="display: flex;justify-content: space-around;align-items: center;"><div style="flex: auto;display: inline-flex;flex-direction: column;align-items: center;"><div id="total-hour">00</div>Hours</div><div style="flex: auto;display: inline-flex;flex-direction: column;align-items: center;"><div id="total-minutes">00</div>Minutes</div></td>
+					</tr>
+				</tbody>
+			</table>
+			<button id="save-dpt-btn" type="button" class="save-btn">Save</button>
+			<button id="edit-dpt-btn" type="button" class="save-btn edit-dpt-btn" style="display:none;">Save</button>
+			<div class="loading-gif"></div>
+		</div>
+		<div id="edit-department" class="col-1 edit-department"></div>
+		<div class="col-2">
+			<div id="added-departments" class="added-departments">
+				<h1>Added departments</h1>
+				<div id="departments-list" class="departments-list">
+					{% for tid, department in departments|sort %}
+						<div>
+							<span>{{ department.term_name }} </span>
+							<img class="edit-icon edit-department" src="{{base_url}}/modules/custom/lm_custom/images/edit_icon.png" width="12" data-term-id="{{ tid }}" data-work="{{ department|json_encode }}" data-cid="{{ department.cid }}">
+							<img class="delete-icon delete-department" src="{{base_url}}/modules/custom/lm_custom/images/delete_icon.png" width="12" data-term-id="{{ tid }}" data-work="{{ department|json_encode }}">
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div id="dialog-message" style='display:none;'></div>
+		</div>
+	</div>
+</div>

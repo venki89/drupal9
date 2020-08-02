@@ -1,0 +1,403 @@
+<div class="health-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="members" type="hidden" value="{{ members|json_encode }}">
+	<div class="tab-menu">
+		<button class="btn active add-data">Add data</button>
+		<button class="btn add-sickdays">Add forgotten sickdays</button>
+		<button class="btn remove-sickdays">Remove sickdays</button>
+		{% if ('chief' in roles) or ('su admin' in roles) or ('administrator' in roles) %}
+			<button class="btn add-agreement">Add part time agreement</button>
+		{% endif %} 
+	</div>
+	<div class="health-container">
+		<div class="col health-status-wrapper">
+			<h1>How do you feel today?</h1>
+			<div id="health-status-div">
+				<button type="button" class="btn {{ health_status == 'sick' ? 'active' : '' }}" data-health-status="sick">I'm sick</button>
+				<button type="button" class="btn {{ health_status == 'sick' ? '' : 'active' }}" data-health-status="healthy">I'm healthy</button>
+			</div>
+		</div>
+		<div class="col add-sick-days-wrapper lm-hidden">
+			<h1>Did you forget to add your sick days?</h1>
+			<h4>Just add them here</h4>
+			<div class="sickday-choice">
+				<input type="radio" id="single-day" class="single-day" name="add-sick-day" checked="checked">
+				<label for="single-day">Single day</label>
+				<input type="radio" id="period" class="period" name="add-sick-day">
+				<label for="period">Period</label>
+			</div>
+			<div class="single-day-wrapper">
+				<h3>Choose day and the time you got sick</h3>
+				<span class="s-day"></span><input type="date" id="s-day-date" class="s-day-date" name="s-day-date">
+				<input type="time" id="s-day-time" class="s-day-time" name="s-day-time">
+				<button id="sickday-send-btn" type="button" class="btn save-btn">Send</button>
+			</div>
+			<div id="period-wrapper" class="period-wrapper" style="display:none;">
+				<h1>Period</h1>
+				<h3>Choose which days you got sick</h3>
+				<h3>Also choose what time you got sick on the first day.</h3>
+				<div class="period-input">
+					<div class="period-start">
+						<span class="s-day"></span><input type="date" id="sick-days-start" class="sick-days-start">
+						<input type="time" id="sick-time-start" class="sick-time-start">
+					</div>
+					<div class="period-end">
+						<span class="s-day"></span><input type="date" id="sick-days-end" class="sick-days-end" style="display:block;">
+					</div>
+				</div>
+				<button id="period-send-btn" type="button" class="btn save-btn">Send</button>
+			</div>
+			<br>
+			<div class="loading-gif"></div>
+		</div>
+		<div class="col remove-sick-days-wrapper lm-hidden">
+			<h1>When did you return to work?</h1>
+			<h4>Did you forget to press "im healthy" in time?</h4>
+			<h4>No worries. Just remove them from here.</h4>
+			<div class="rm-sickday-choice">
+				<input type="radio" id="rm-single-day" class="rm-single-day" name="rm-sick-day" checked="checked">
+				<label for="rm-single-day">Single day</label>
+				<input type="radio" id="rm-period" class="rm-period" name="rm-sick-day">
+				<label for="rm-period">Period</label>
+			</div>
+			<div class="rm-single-day-wrapper">
+				<h3>Choose day and the time you got sick</h3>
+				<span class="rm-s-day"></span><input type="date" id="rm-s-day-date" class="rm-s-day-date" name="rm-s-day-date">
+				<button id="sickday-rm-btn" type="button" class="btn save-btn">Send</button>
+			</div>
+			<div id="rm-period-wrapper" class="period-wrapper" style="display:none;">
+				<h1>Period</h1>
+				<h3>Choose which days you got sick</h3>
+				<h3>Also choose what time you got sick on the first day.</h3>
+				<div class="period-input">
+					<div class="period-start">
+						<span></span>
+						<input type="date" id="rm-sick-days-start" class="sick-days-start">
+					</div>
+					<div class="period-end">
+						<span></span>
+						<input type="date" id="rm-sick-days-end" class="sick-days-end" style="display:block;">
+					</div>
+				</div>
+				<button id="period-rm-btn" type="button" class="btn save-btn">Send</button>
+			</div>
+			<br>
+			<div class="loading-gif"></div>
+		</div>
+		<div id="special-agreement-wrapper" class="col special-agreement-wrapper lm-hidden">
+			<div id="special-ag-users" class="special-agreement">
+				<h1>Special agreement with an user.</h1>
+				<p>Make a special agreement with one of your employees.</p>
+				<div class="find-users autocomplete">
+					<h1>Find User</h1>
+					<input type="text" id="search-user" class="search-user" placeholder="Search after username or id">
+				</div>
+				<div class="ag-options">
+					<h1>Add new working hours</h1>
+					<input type="radio" id="ag-sd" class="ag-sd" name="ag-sd-select" checked="checked">
+					<label for="ag-sd">Single days</label>
+					<input type="radio" id="ag-period" class="ag-period" name="ag-sd-select">
+					<label for="ag-period">Period</label>
+				</div>
+				<div class="ag-sd-wrapper ag-wrapper">
+					<div class="ag-date-wrapper">
+						<div>
+							<label for="ag-sd-date">Date</label>
+							<div style="flex-direction: row;align-items: center;">
+								<span class="ag-sd-day"></span>
+								<input type="date" class="ag-sd-date">
+							</div>
+						</div>
+						<div>
+							<label for="ag-sd-from">From</label>
+							<input type="time" class="ag-sd-from">
+						</div>
+						<div>
+							<label for="ag-sd-to">To</label>
+							<input type="time" class="ag-sd-to">
+						</div>
+						<div>
+							<label for="ag-sd-start-time">Register sick before</label>
+							<input type="time" class="ag-sd-start-time">
+						</div>
+					</div>
+					<div class="add-more-sd add-more">
+						<button id="sd-plus" class="plus-btn">+</button>
+						<div>
+							<p>Add another single day</p>
+							<p>(If it's for a longer period, than use the other option)</p>
+						</div>
+					</div>
+					<button id="ag-sd-send" type="button" class="btn save-btn">Send</button>
+				</div>
+				<div class="ag-period-wrapper ag-wrapper lm-hidden">
+					<h1>Period</h1>
+					<h2>Use this only for a longer period like months</h2>
+					<div class="ag-date-wrapper">
+						<div>
+							<label for="ag-period-dt-from">Date from</label>
+							<div style="flex-direction: row;align-items: center;">
+								<span class="ag-period-day-from"></span>
+								<input type="date" class="ag-period-dt-from">
+							</div>
+						</div>
+						<div>
+							<label for="ag-period-dt-to">Date to</label>
+							<div style="flex-direction: row;align-items: center;">
+								<span class="ag-period-day-to"></span>
+								<input type="date" class="ag-period-dt-to">
+							</div>
+						</div>
+						<div>
+							<label for="ag-period-from">From</label>
+							<input type="time" class="ag-period-from">
+						</div>
+						<div>
+							<label for="ag-period-to">To</label>
+							<input type="time" class="ag-period-to">
+						</div>
+						<div>
+							<label for="ag-period-start-time">Register sick before</label>
+							<input type="time" class="ag-period-start-time">
+						</div>
+					</div>
+					<div class="add-more-period add-more">
+						<button id="pd-plus" class="plus-btn">+</button>
+						<p>Add another period</p>
+					</div>
+					<button id="ag-period-send" type="button" class="btn save-btn">Send</button>
+				</div>
+			</div>
+			<div id="ag-regd-users" class="special-agreement ag-regd-users">
+				<table id="ag-regd-users-table" class="tablesorter">
+					<thead>
+						<tr>
+							<th>User</th>
+							<th>ID number</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for key, member in members %}
+							{% if member.ag_user %}
+							<tr>
+								{% if member.role == 'administrator' %}
+									<td class="border-blue ag-user">{{ member.name }}</td>
+								{% elseif member.role == 'chief' %}
+									<td class="border-grey ag-user">{{ member.name }}</td>
+								{% else %}	
+									<td class="border-orange ag-user">{{ member.name }}</td>
+								{% endif %}	
+								
+								<td class="ag-user-id-number">{{ member.id_number }}</td>
+								<td><button class="ag-expand" data-ag-uid="{{key}}" data-ag={{member.ag_user|json_encode}}>Expand</button></td>
+							</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="ag-modal" class="lm-hidden">
+		<div class="close-btn">X</div>
+		<h2>Special Agreement</h2>
+		<div class="ag-ep-user">
+			<table id="expand-ag-table" class="tablesorter">
+				<tbody>
+					{% for key, member in members %}
+						{% if member.ag_user %}
+						<tr class="ag-user-{{key}} lm-hidden">
+							<td class="ag-user">{{ member.name }}</td>
+							<td class="ag-user-id-number">{{ member.id_number }}</td>
+						</tr>
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="ag-data">
+				<table id="health-ag-table" class="tablesorter">
+					<thead>
+						<tr>
+							<th>Date from</th>
+							<th>Date to</th>
+							<th>Time from</th>
+							<th>Time to</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for id, member in members %}
+								{% for key, ag in member.ag_user %} 
+								<tr class="ag-data-user-{{id}} lm-hidden">
+									<td class="ag-date-from">{{ ag.ag_day_from }}</td>
+									<td class="ag-date-to">{{ ag.ag_day_to }}</td>
+									<td class="ag-time-from">{{ ag.ag_time_from }}</td>
+									<td class="ag-time-to">{{ ag.ag_time_to }}</td>
+									<td>
+										<img class="edit-icon edit-ag" src="{{base_url}}/modules/custom/lm_custom/images/edit_icon.png" width="12" data-ag-id="{{ key }}">
+										<img class="delete-icon delete-ag" src="{{base_url}}/modules/custom/lm_custom/images/delete_icon.png" width="12" data-ag-id="{{ key }}">
+									</td>
+								</tr>
+								{% endfor %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="dialog-message" style='display:none;'></div>
+	<div id="sick-notification" class="wrapper modal lm-hidden">
+		<img class="print-icon" src="{{base_url}}/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15">
+	  <h4>Notification Sent</h4>
+	  <div class="modal-content">
+	  <h2>You are now registered as sick</h2>
+	  <p>A mail has been sent to our nearest chief. No need for approval.</p>
+	  </div>
+	  <div class="modal-date-wrapper">
+	    <div>
+	    	<span class="modal-day"></span>
+	    	<span class="modal-date" style="padding-left:20px;"></span>
+    	</div>
+	    <div class="modal-time"></div>
+    </div>
+    <button id="close-notification" class="close-modal">Ok</button>
+  </div>
+  <div id="health-notification" class="wrapper modal lm-hidden">
+		<img class="print-icon" src="http://localhost/drupal8/web/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15">
+	  <h4>Notification Sent</h4>
+	  <div class="modal-content">
+	  <h2>You are now registered as healthy</h2>
+	  <p>A mail has been sent to our nearest chief. No need for approval.</p>
+	  </div>
+	  <div class="modal-date-wrapper">
+	    <div>
+	    	<span class="modal-day"></span>
+	    	<span class="modal-date" style="padding-left:20px;"></span>
+    	</div>
+	    <div class="modal-time"></div>
+    </div>
+		<div class="regd-days">
+			<table>
+				<thead>
+					<tr>
+						<th>Sickday registered</th>
+						<th>Healthday registered</th>
+	          <th>Total days registered</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><span class="regd-sick-day"></span><span class="regd-sick-date"></span></td>
+						<td><span class="regd-health-day"></span><span class="regd-health-date"></span></td>
+	          <td class="regd-sickdays"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+    <button id="close-notification" class="close-modal">Ok</button>
+  </div>
+	<div id="add-sickday-notification" class="wrapper modal lm-hidden">
+		<div class="modal-date-wrapper">
+	    <div>
+	    	<span class="modal-day"></span>
+	    	<span class="modal-date" style="padding-left:10px;"></span>
+    	</div>
+	    <div class="modal-time"></div>
+    </div>
+		<img class="print-icon" src="http://localhost/drupal8/web/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15">
+	  <h4>Notification Sent</h4>
+	  <div class="modal-content">
+	  <h2>You have successfully added new sickdays</h2>
+	  <p>A mail has been sent to our nearest chief. An approval is needed. The moment it has been approved, your data will be added in the system.</p>
+	  </div>
+		<div class="regd-days">
+			<table>
+				<thead>
+					<tr>
+						<th>Sickday from</th>
+						<th>Sickday to</th>
+	          <th>Total days registered</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><span class="regd-sick-day-from"></span><span class="regd-sick-date-from"></span></td>
+						<td><span class="regd-sick-day-to"></span><span class="regd-sick-date-to"></span></td>
+	          <td class="regd-sickdays"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+    <button id="close-notification" class="close-modal">Ok</button>
+  </div>  
+  <div id="remove-sickday-notification" class="wrapper modal lm-hidden">
+		<div class="modal-date-wrapper">
+	    <div>
+	    	<span class="modal-day"></span>
+	    	<span class="modal-date" style="padding-left:10px;"></span>
+    	</div>
+	    <div class="modal-time"></div>
+    </div>
+		<img class="print-icon" src="http://localhost/drupal8/web/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15">
+	  <h4>Notification Sent</h4>
+	  <div class="modal-content">
+	  <h2>You have successfully removed sickdays</h2>
+	  <p>A mail has been sent to our nearest chief. An approval is needed. The moment it has been approved, your data will be removed in the system.</p>
+	  </div>
+		<div class="regd-days">
+			<table>
+				<thead>
+					<tr>
+						<th>Sickday from</th>
+						<th>Sickday to</th>
+	          <th>Total days registered</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><span class="regd-sick-day-from"></span><span class="regd-sick-date-from"></span></td>
+						<td><span class="regd-sick-day-to"></span><span class="regd-sick-date-to"></span></td>
+	          <td class="regd-sickdays"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+    <button id="close-notification" class="close-modal">Ok</button>
+  </div>
+  <div id="add-agreement-notification" class="wrapper modal lm-hidden">
+		<div class="modal-date-wrapper">
+	    <div>
+	    	<span class="modal-day"></span>
+	    	<span class="modal-date" style="padding-left:10px;"></span>
+    	</div>
+	    <div class="modal-time"></div>
+    </div>
+		<img class="print-icon" src="http://localhost/drupal8/web/modules/custom/lm_custom/images/print_icon.png" onclick="javascript:window.print();" width="15">
+	  <h4>Notification</h4>
+	  <div class="modal-content">
+	  <h2>Special agreement saved</h2>
+	  <p>Your latest special agreement has been added to your list.</p>
+	  </div>
+		<div class="regd-days">
+			<table>
+				<thead>
+					<tr>
+						<th>Working days from</th>
+						<th>Working days to</th>
+	          <th>Total days registered</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><span class="regd-sick-day-from"></span><span class="regd-sick-date-from"></span></td>
+						<td><span class="regd-sick-day-to"></span><span class="regd-sick-date-to"></span></td>
+	          <td class="regd-sickdays"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+    <button id="close-notification" class="close-modal">Ok</button>
+  </div>  
+</div>
+		

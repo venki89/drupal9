@@ -1,0 +1,426 @@
+lm_custom.departments_page:
+  path: '/departments'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewDepartments'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.add_department:
+  path: '/add-department'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addDepartment'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.members_page:
+  path: '/members'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewMembers'
+  requirements:
+    _role: 'administrator+su admin'
+
+lm_custom.add_member:
+  path: '/add-member'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addMember'
+  requirements:
+    _role: 'administrator+su admin'
+
+lm_custom.health_page:
+  path: '/health'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewHealth'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.add_health:
+  path: '/add-health'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addHealth'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.add_single_sickday:
+  path: '/add-single-sickday'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addSingleSickDay'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.add_period_sickdays:
+  path: '/add-period-sickdays'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addPeriodSickDays'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.remove_single_sickday:
+  path: '/remove-single-sickday'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::removeSingleSickDay'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.remove_period_sickdays:
+  path: '/remove-period-sickdays'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::removePeriodSickDays'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.add_single_agreement:
+  path: '/add-single-agreement'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addSingleAgreement'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.add_period_agreement:
+  path: '/add-period-agreement'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addPeriodAgreement'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.edit_period_agreement:
+  path: '/edit-period-agreement'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::editPeriodAgreement'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.delete_period_agreement:
+  path: '/delete-period-agreement'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::deletePeriodAgreement'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.dashboard_page:
+  path: '/dashboard'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewDashboard'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.edit_department:
+  path: '/edit-department'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::editDepartment'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.delete_department:
+  path: '/delete-department'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::deleteDepartment'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.edit_member:
+  path: '/edit-member'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::editMember'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.delete_member:
+  path: '/delete-member'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::deleteMember'
+  requirements:
+    _role: 'administrator+su admin+chief'
+
+lm_custom.user_settings_page:
+  path: '/user-settings'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::userSettings'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.change_password:
+  path: '/change-password'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::changePassword'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.statistics_page:
+  path: '/statistics/{user_id}'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewStatistics'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.get_stats_data:
+  path: '/get-stats-data'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::getStatsData'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.front_page:
+  path: '/front-page'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewFrontPage'
+  requirements:
+    _role: 'administrator+su admin+chief+staff'
+
+lm_custom.approve:
+  path: '/approve/{user_id}'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::approve'
+  requirements:
+    _permission: 'access content'
+
+lm_custom.remove:
+  path: '/remove/{user_id}'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::remove'
+  requirements:
+    _permission: 'access content'
+
+lm_custom.companies_page:
+  path: '/companies'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::viewCompanies'
+  requirements:
+    _role: 'administrator'
+
+lm_custom.add_company:
+  path: '/add-company'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::addCompany'
+  requirements:
+    _role: 'administrator'
+
+lm_custom.delete_company:
+  path: '/delete-company'
+  defaults:
+    _controller: '\Drupal\lm_custom\Controller\LmCustomController::deleteCompany'
+  requirements:
+    _role: 'administrator'
+
+entity.lm_custom_health.canonical:
+  path: '/lm_custom_health/{lm_custom_health}'
+  defaults:
+  # Calls the view controller, defined in the annotation of the health entity
+    _entity_view: 'lm_custom_health'
+    _title: 'Health Content'
+  requirements:
+  # Calls the access controller of the entity, $operation 'view'
+    _entity_access: 'lm_custom_health.view'
+
+entity.lm_custom_health.collection:
+  path: '/lm_custom_health/list'
+  defaults:
+  # Calls the list controller, defined in the annotation of the health entity.
+    _entity_list: 'lm_custom_health'
+    _title: 'Health List'
+  requirements:
+  # Checks for permission directly.
+    _permission: 'administer health entity'
+
+lm_custom.health_add:
+  path: '/lm_custom_health/add'
+  defaults:
+  # Calls the form.add controller, defined in the health entity.
+    _entity_form: lm_custom_health.add
+    _title: 'Add Health'
+  requirements:
+    _entity_create_access: 'lm_custom_health'
+    _role: 'administrator'
+
+entity.lm_custom_health.edit_form:
+  path: '/lm_custom_health/{lm_custom_health}/edit'
+  defaults:
+  # Calls the form.edit controller, defined in the health entity.
+    _entity_form: lm_custom_health.edit
+    _title: 'Edit Health'
+  requirements:
+    _entity_access: 'lm_custom_health.edit'
+
+entity.lm_custom_health.delete_form:
+  path: '/health/{lm_custom_health}/delete'
+  defaults:
+    # Calls the form.delete controller, defined in the health entity.
+    _entity_form: lm_custom_health.delete
+    _title: 'Delete Health'
+  requirements:
+    _entity_access: 'lm_custom_health.delete'
+
+lm_custom.health_settings:
+  path: 'admin/structure/lm_custom_health_settings'
+  defaults:
+    _form: '\Drupal\lm_custom\Form\HealthSettingsForm'
+    _title: 'Health Settings'
+  requirements:
+    _permission: 'administer health entity'
+
+entity.lm_custom_work.canonical:
+  path: '/lm_custom_work/{lm_custom_work}'
+  defaults:
+  # Calls the view controller, defined in the annotation of the work entity
+    _entity_view: 'lm_custom_work'
+    _title: 'Work Content'
+  requirements:
+  # Calls the access controller of the entity, $operation 'view'
+    _entity_access: 'lm_custom_work.view'
+
+entity.lm_custom_work.collection:
+  path: '/lm_custom_work/list'
+  defaults:
+  # Calls the list controller, defined in the annotation of the work entity.
+    _entity_list: 'lm_custom_work'
+    _title: 'Work List'
+  requirements:
+  # Checks for permission directly.
+    _permission: 'administer work entity'
+
+lm_custom.work_add:
+  path: '/lm_custom_work/add'
+  defaults:
+  # Calls the form.add controller, defined in the work entity.
+    _entity_form: lm_custom_work.add
+    _title: 'Add Work'
+  requirements:
+    _entity_create_access: 'lm_custom_work'
+    _role: 'administrator'
+
+entity.lm_custom_work.edit_form:
+  path: '/lm_custom_work/{lm_custom_work}/edit'
+  defaults:
+  # Calls the form.edit controller, defined in the work entity.
+    _entity_form: lm_custom_work.edit
+    _title: 'Edit Work'
+  requirements:
+    _entity_access: 'lm_custom_work.edit'
+
+entity.lm_custom_work.delete_form:
+  path: '/work/{lm_custom_work}/delete'
+  defaults:
+    # Calls the form.delete controller, defined in the work entity.
+    _entity_form: lm_custom_work.delete
+    _title: 'Delete Work'
+  requirements:
+    _entity_access: 'lm_custom_work.delete'
+
+lm_custom.work_settings:
+  path: 'admin/structure/lm_custom_work_settings'
+  defaults:
+    _form: '\Drupal\lm_custom\Form\WorkSettingsForm'
+    _title: 'Work Settings'
+  requirements:
+    _permission: 'administer work entity'
+
+entity.lm_custom_agreement.canonical:
+  path: '/lm_custom_agreement/{lm_custom_agreement}'
+  defaults:
+  # Calls the view controller, defined in the annotation of the agreement entity
+    _entity_view: 'lm_custom_agreement'
+    _title: 'Agreement Content'
+  requirements:
+  # Calls the access controller of the entity, $operation 'view'
+    _entity_access: 'lm_custom_agreement.view'
+
+entity.lm_custom_agreement.collection:
+  path: '/lm_custom_agreement/list'
+  defaults:
+  # Calls the list controller, defined in the annotation of the agreement entity.
+    _entity_list: 'lm_custom_agreement'
+    _title: 'Agreement List'
+  requirements:
+  # Checks for permission directly.
+    _permission: 'administer agreement entity'
+
+lm_custom.agreement_add:
+  path: '/lm_custom_agreement/add'
+  defaults:
+  # Calls the form.add controller, defined in the agreement entity.
+    _entity_form: lm_custom_agreement.add
+    _title: 'Add Agreement'
+  requirements:
+    _entity_create_access: 'lm_custom_agreement'
+    _role: 'administrator'
+
+entity.lm_custom_agreement.edit_form:
+  path: '/lm_custom_agreement/{lm_custom_agreement}/edit'
+  defaults:
+  # Calls the form.edit controller, defined in the agreement entity.
+    _entity_form: lm_custom_agreement.edit
+    _title: 'Edit Agreement'
+  requirements:
+    _entity_access: 'lm_custom_agreement.edit'
+
+entity.lm_custom_agreement.delete_form:
+  path: '/agreement/{lm_custom_agreement}/delete'
+  defaults:
+    # Calls the form.delete controller, defined in the agreement entity.
+    _entity_form: lm_custom_agreement.delete
+    _title: 'Delete Agreement'
+  requirements:
+    _entity_access: 'lm_custom_agreement.delete'
+
+lm_custom.agreement_settings:
+  path: 'admin/structure/lm_custom_agreement_settings'
+  defaults:
+    _form: '\Drupal\lm_custom\Form\AgreementSettingsForm'
+    _title: 'Agreement Settings'
+  requirements:
+    _permission: 'administer agreement entity'
+
+entity.lm_custom_company.canonical:
+  path: '/lm_custom_company/{lm_custom_company}'
+  defaults:
+  # Calls the view controller, defined in the annotation of the company entity
+    _entity_view: 'lm_custom_company'
+    _title: 'Company Content'
+  requirements:
+  # Calls the access controller of the entity, $operation 'view'
+    _entity_access: 'lm_custom_company.view'
+
+entity.lm_custom_company.collection:
+  path: '/lm_custom_company/list'
+  defaults:
+  # Calls the list controller, defined in the annotation of the company entity.
+    _entity_list: 'lm_custom_company'
+    _title: 'Company List'
+  requirements:
+  # Checks for permission directly.
+    _permission: 'administer company entity'
+
+lm_custom.company_add:
+  path: '/lm_custom_company/add'
+  defaults:
+  # Calls the form.add controller, defined in the company entity.
+    _entity_form: lm_custom_company.add
+    _title: 'Add Company'
+  requirements:
+    _entity_create_access: 'lm_custom_company'
+    _role: 'administrator'
+
+entity.lm_custom_company.edit_form:
+  path: '/lm_custom_company/{lm_custom_company}/edit'
+  defaults:
+  # Calls the form.edit controller, defined in the company entity.
+    _entity_form: lm_custom_company.edit
+    _title: 'Edit Company'
+  requirements:
+    _entity_access: 'lm_custom_company.edit'
+
+entity.lm_custom_company.delete_form:
+  path: '/company/{lm_custom_company}/delete'
+  defaults:
+    # Calls the form.delete controller, defined in the company entity.
+    _entity_form: lm_custom_company.delete
+    _title: 'Delete Company'
+  requirements:
+    _entity_access: 'lm_custom_company.delete'
+
+lm_custom.company_settings:
+  path: 'admin/structure/lm_custom_company_settings'
+  defaults:
+    _form: '\Drupal\lm_custom\Form\CompanySettingsForm'
+    _title: 'Company Settings'
+  requirements:
+    _permission: 'administer company entity'

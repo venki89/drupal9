@@ -1,0 +1,581 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.container-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+}
+
+.departments-list div {
+	padding: 5px;
+	border: 1px solid #a5a2a2;
+	display: inline-block;
+}
+
+#departments-list {
+    display: flex;
+    flex-direction: column;
+}
+
+#departments-list > div {
+    margin: 5px 0;
+}
+
+.wrapper{
+	text-align:unset !important;
+}
+
+.add-department, .added-departments, .save-wrapper, .wrapper {
+	border: 1px solid #666;
+	box-shadow: 0px 0px 2px;
+	padding: 20px;
+	margin: 15px 0;
+	text-align: center;
+	border-radius: 10px;
+}
+
+.col-1, .col-2 {
+	padding: 30px 55px;
+}
+
+.col-2 {
+	display: flex;
+	flex-direction: column;
+}
+/*.health-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}*/
+button#sickday-send-btn {
+	display: block;
+	margin: 0 auto;
+}
+
+.add-sick-days-wrapper, .health-status-wrapper, .period-wrapper,
+	.remove-sick-days-wrapper, .special-agreement {
+	border: 1px solid #666;
+	box-shadow: 0px 0px 2px;
+	padding: 30px;
+	margin: 25px 0;
+	text-align: center;
+	border-radius: 10px;
+	width: 40%;
+	height: 100%;
+}
+
+.health-status-wrapper {
+	display: block;
+	margin: 15px auto;
+}
+
+.btn {
+	border: none;
+	outline: none;
+	padding: 10px 35px;
+	background-color: #666;
+	color: white;
+	cursor: pointer;
+	font-size: 18px;
+}
+
+.active, .btn:hover {
+	background-color: #f1f1f1;
+	color: #666;
+}
+
+img.edit-icon, img.delete-icon, img.deactivate-icon {
+	width: 12px;
+	cursor: pointer;
+	padding: 1px;
+	vertical-align: middle;
+}
+
+.members-list{
+	border: 1px solid #666;
+	text-align: center;
+	margin: 5px auto;
+}
+
+.save-btn {
+	display: block;
+	margin: 0 auto;
+}
+
+#user-settings-page {
+	text-align: center;
+}
+
+#user-settings-page form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#user-settings-page label {
+	margin: 0 auto;
+}
+
+.loading-gif {
+	height: 32px;
+	width: 32px;
+	position: absolute;
+	bottom: 2.5%;
+	left: 70%;
+	background: url(../images/loading.gif) no-repeat center center;
+}
+
+.loading-gif, .success-msg, .error-msg, #ok-button, #ok-btn,
+	#confirm-message, #customer-details {
+	display: none;
+}
+
+.sync td input, .sickday-choice input, .rm-sickday-choice input,
+	.ag-options label {
+	vertical-align: middle;
+}
+
+.sync td label, .sickday-choice label, .rm-sickday-choice label,
+	.ag-options input {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.work-table-value td:first-child {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.work-table-value td {
+	text-align: center;
+}
+
+#total-hour, #total-minutes {
+	border: 1px solid #9d9d9d;
+	padding: 2px;
+	border-radius: 4px;
+	background: white;
+}
+
+.period-wrapper {
+	position: absolute;
+	right: 10%;
+	width: 30%;
+	top: 16%;
+	height: unset !important;
+}
+
+.period-wrapper input {
+	float: left;
+}
+
+.period-input {
+	display: flex;
+	flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+	margin: 0 !important;
+	padding: 0;
+}
+
+.lm-hidden {
+	display: none !important;
+}
+
+.period-start, .period-end {
+	display: flex;
+	align-items: center;
+}
+
+#rm-period-wrapper .period-input {
+	align-items: center;
+}
+
+#special-agreement-wrapper {
+	display: flex;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+}
+
+label {
+	display: inline !important;;
+}
+
+.ag-wrapper>div:nth-of-type(1), .ag-wrapper .ag-date-wrapper {
+	display: flex;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+}
+
+.ag-wrapper>div:nth-of-type(1) div, .ag-wrapper .ag-date-wrapper div {
+	display: flex;
+	flex-direction: column;
+}
+
+.plus-btn {
+	display: inline-block;
+	border-radius: 2px;
+	box-shadow: 0 0 2px #666;
+	background: #666;
+	color: white;
+	padding: 5px 10px;
+	border: 0;
+}
+
+.add-more {
+	display: flex;
+	text-align: left;
+	align-items: center;
+}
+
+.add-more div, .add-more>p {
+	margin-left: 10px !important;
+}
+
+.ag-period-wrapper {
+	border: 2px solid #666;
+	padding: 15px;
+}
+
+#special-ag-users>div {
+	margin: 40px 0;
+}
+
+.ag-period-wrapper>h1 {
+	text-align: left;
+	font-size: 1.8em;
+	padding-bottom: 15px;
+}
+
+.autocomplete {
+	position: relative;
+	display: inline-block;
+}
+
+.autocomplete-items {
+	position: absolute;
+	border: 1px solid #d4d4d4;
+	border-bottom: none;
+	border-top: none;
+	z-index: 99;
+	/*position the autocomplete items to be the same width as the container:*/
+	top: 100%;
+	left: 0;
+	right: 0;
+}
+
+.autocomplete-items div {
+	padding: 10px;
+	cursor: pointer;
+	background-color: #fff;
+	border-bottom: 1px solid #d4d4d4;
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+	background-color: #e9e9e9;
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+	background-color: DodgerBlue !important;
+	color: #ffffff;
+}
+
+#ag-modal {
+	position: absolute;
+	border: 1px solid;
+	border-radius: 5px;
+	padding: 30px;
+	top: 45%;
+	right: 10%;
+	box-shadow: 0px 0px 5px #666;
+	background: white;
+}
+
+.close-btn {
+	position: absolute;
+	right: 8px;
+	top: 8px;
+	border: 1px solid;
+	padding: 1px;
+	width: 16px;
+	border-radius: 50%;
+	text-align: center;
+	cursor: pointer;
+}
+
+#dashboard-page #ag-modal {
+	top: 10% !important;
+	left: 25% !important;
+	right: 25% !important;
+}
+
+#statistics-page #ag-modal {
+	top: 10% !important;
+}
+
+#user-profile div {
+	padding-top: 15px;
+}
+
+#user-name {
+	font-size: 1.8em;
+}
+
+#statistics-page {
+	display: flex;
+	justify-content: space-around;
+}
+
+.stats-info .sick-info {
+	display: flex;
+}
+
+.stats-info .sick-info > div {
+  padding: 0 20px;
+}
+
+.hl{
+	color:#4a7a8c;
+}
+
+.red{
+	color: #bd0000;
+}
+
+.health-curve {
+	padding:30px 20px !important;
+}
+.legend.bar-legend, .bar-y{
+	display:none !important;
+}
+.health-curve h4{
+	transform: rotate(-90deg);
+	position: absolute;
+	bottom: 33%;
+}
+.bar-chart{
+	border-left: unset !important;
+}
+.bar-chart-wrapper{
+	width: unset !important;
+}
+.divider{
+	display:inline-block;
+	transform: rotate(-90deg);
+}
+.excel-data-wrapper{
+	position:relative;
+	padding: 60px !important;
+}
+.top-right{
+	position:absolute;
+	top:3px;
+	right:3px;
+}
+.top-right img{
+	vertical-align:middle;
+}
+
+.wrapper{
+	height:100%;
+}
+
+.front-header {
+  padding: 5px;
+  background: #cdcccc;
+  width: 90%;
+  display: block;
+  margin: 0 auto;
+}
+
+.front-header h1 {
+  padding: 0 15px;
+}
+
+#add-member-form form, #edit-member-form form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#add-member-form, #edit-member-form{
+	align-items: center;
+}
+
+.working-hours, .receive-mail, .law {
+  padding: 25px 0;
+}
+
+.members-section > h1 {
+  text-align: center;
+}
+
+.modal {
+  position: relative;
+  width: 300px;
+  margin-left: 25%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding:15px;
+}
+.modal-content p {
+	padding:15px;
+}
+
+.modal-date-wrapper {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2em;
+}
+
+.modal button {
+	width: 60px;
+	display: block;
+	margin: 0 auto;
+	margin-top:15px;
+}
+
+.modal .print-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 7px;
+  right: 15px;
+}
+
+#health-notification {
+  width: 350px;
+}
+
+.regd-sick-day, .regd-health-day, .regd-sick-day-from, .regd-sick-day-to {
+  display: block;
+}
+
+#add-sickday-notification .modal-date-wrapper, #remove-sickday-notification .modal-date-wrapper, #add-agreement-notification .modal-date-wrapper {
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  font-size:1.0em;
+}
+
+#add-sickday-notification h4, #remove-sickday-notification h4, #add-agreement-notification h4{
+	padding-top: 25px;
+}
+
+#dashboard-page #ag-modal .print-icon {
+  position: absolute;
+  right: 60px;
+   cursor: pointer;
+}
+
+.border-blue{
+	border-left: 5px solid blue;
+}
+
+.border-grey{
+	border-left: 5px solid grey;
+}
+
+.border-orange{
+	border-left: 5px solid orange;
+}
+
+.highlight-sick, .hl-sick-red{
+	background: #c65c5c !important;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+}
+
+.highlight-healthy, .hl-sick-green{
+	background: green !important;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+}
+
+.hl-sick-grey{
+	background: grey !important;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+}
+
+.hl-sick-yellow{
+	background: orange !important;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+}
+
+#user-table th, #user-table td, #fp-user-table th, #fp-user-table td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+.back-to-dash {
+  position: absolute;
+  bottom: 50%;
+  left: 12%;
+  box-shadow: 0 0 1px #666;
+  padding: 8px 20px;
+  border-radius: 5px;
+  border: 1px solid #666;
+}
+
+.back-to-dash a {
+  border: 0;
+}
+
+#fp-user-table{
+	width:60%;	
+}
+
+#add-company-pop{
+	cursor: pointer;
+}
+
+.cp-modal {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+	align-items: center;
+	z-index: 6;
+}
+.cp-modal__contents{
+	background-color: #fff;
+	padding: 2rem 4rem;
+	position: relative;
+	box-shadow: 0 0 5px #ccc;
+	border-radius: 5px;
+}
+option[class*='dp-opt-']{
+	display: none;
+}
+
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}

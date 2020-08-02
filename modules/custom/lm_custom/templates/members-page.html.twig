@@ -1,0 +1,267 @@
+<div class="members-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="departments" type="hidden" value="{{ departments|json_encode }}">
+	<input id="works" type="hidden" value="{{ works|json_encode }}">
+	<input id="companies" type="hidden" value="{{ companies|json_encode }}">
+	<div class="container-wrapper">
+		<div id="add-member-form" class="col-2 wrapper">
+			<h1>Add a new member</h1>
+			<form name="add-member-form" method="post" action="#">
+				<label for="m-name">Name</label>
+				<input type="text" id="member-name" name="m-name" class="member-name">
+				<label for="m-email">Email</label>
+				<input type="email" id="member-email" name="m-email" class="member-email">
+				<label for="m-id-number">ID number</label>
+				<input type="text" id="member-id-number" name="m-id-number" class="member-id-number">
+				<label for="member-cp">Company</label>
+				<select id="member-cp" name="m-cp">
+					<option value=""></option>
+					{% for cid, company in companies %}
+						<option value="{{ cid }}">{{ company.cp_name }}</option>
+					{% endfor %}
+				</select>
+				<label for="m-dpt">Department</label>
+				<select id="member-dpt" name="m-dpt">
+					<option value=""></option>
+					{% for tid, department in departments %}
+						<option class="dp-opt-{{ department.cid }}" value="{{ tid }}">{{ department.dpt_name }}</option>
+					{% endfor %}
+				</select>
+				<label for="m-role">Role</label>
+				<select id="member-role" name="m-role">
+					<option value=""></option>
+					{% for role in roles %}
+						<option value="{{ role|lower }}">{{ role }}</option>
+					{% endfor %}
+				</select>
+				<div class="law">
+					<h3 style="font-weight:bold">120 days law</h3>
+					<input type="radio" id="within-law" name="120-law" value="1" checked="checked">
+					<label for="within-law" style="display:inline-block;">	User is registered within the 120 days law</label><br>
+					<input type="radio" id="without-law" name="120-law" value="0">
+					<label for="without-law" style="display:inline-block;">	User will not be registered within the 120 days law</label><br>
+				</div>
+				<br>
+				<div class="receive-mail" style="width:400px">
+					<div style="display: flex;justify-content: space-between;width: 85px;">
+						<h3>Admin</h3>
+						<h3>Chief</h3>
+					</div>
+					<div style="display: flex;justify-content: space-between; width:68%">
+						<input type="checkbox" id="admin-receive-all" name="receive-all" data-role="administrator">
+						<input type="checkbox" id="chief-receive-all" name="receive-all" data-role="chief">
+						<label for="receive-all" style="display:inline-block;">	Receive all sick leave emails</label>
+					</div>
+					<div style="display: flex;justify-content: space-between;">
+						<input type="checkbox" id="admin-receive-warning" name="receive-warning" data-role="administrator">
+						<input type="checkbox" id="chief-receive-warning" name="receive-warning" data-role="chief">
+						<label for="receive-warning" style="display:inline-block;"> Receive only sick leave emails on day 115 and 120</label>
+					</div>
+				</div>
+				<div class="working-hours">
+					<h1>Working hours</h1>
+					<div style="display: flex;justify-content: space-around;">
+						<div><input type="radio" id="input-dpt-name" class="input-dpt-name" name="toggle-work" checked="checked" value="0"> <div id="dpt-name" style='display:inline-block'></div></div>
+						<div><input type="radio" id="input-spl-hours" class="input-spl-hours" name="toggle-work" value="1"> <div id="spl-hours" style='display:inline-block'>Special Hours</div></div>
+					</div>
+					<table id="add-wh-table" class="tablesorter w-hours-table">
+						<thead>
+							<tr>
+								<th>Working hours per week</th>
+								<th>Work starts at</th>
+								<th>Register full time sick before</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="sync">
+								<td><input type="checkbox" name="sync-hours" id="sync-hours"><label for="sync-hours">Sync all days</label></td>
+								<td><input type="checkbox" name="sync-work-start" id="sync-work-start"><label for="sync-work-start">Sync all</label></td>
+								<td><input type="checkbox" name="sync-sick-start" id="sync-sick-start"><label for="sync-sick-start">Sync all</label></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Monday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Tuesday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Wednesday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Thursday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Friday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr>
+								<td colspan="2">Total work day per week</td>
+								<td colspan="1" style="display: flex;justify-content: space-around;align-items: center;"><div style="flex: auto;display: inline-flex;flex-direction: column;align-items: center;"><div id="total-hour">00</div>Hours</div><div style="flex: auto;display: inline-flex;flex-direction: column;align-items: center;"><div id="total-minutes">00</div>Minutes</div></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<input type="submit" value="Save">
+				<div class="loading-gif"></div>
+			</form>
+		</div>
+		<div id="edit-member-form" class="edit-member-form col-2 wrapper" style="display:none;">
+			<h1>Edit member</h1>
+			<form name="edit-member-form" method="post" action="#">
+				<label for="edit-m-name">Name</label>
+				<input type="text" id="edit-member-name" name="edit-m-name" class="member-name" value="">
+				<label for="edit-m-email">Email</label>
+				<input type="email" id="edit-member-email" name="edit-m-email" class="member-email" value="">
+				<label for="edit-m-id-number">Email</label>
+				<input type="text" id="edit-member-id-number" name="edit-m-id-number" class="member-id-number" value="">
+				<label for="edit-member-cp">Company</label>
+				<select id="edit-member-cp" name="edit-m-cp">
+					{% for cid, company in companies %}
+						<option class="cp-opt-{{ cid }}" value="{{ cid }}">{{ company.cp_name }}</option>
+					{% endfor %}
+				</select>
+				<label for="edit-member-dpt">Department</label>
+				<select id="edit-member-dpt" name="edit-m-dpt" multiple="multiple">
+					<option value=""></option>
+					{% for tid, department in departments %}
+						<option class="dp-opt-{{ department.cid }}" value="{{ tid }}">{{ department.dpt_name }}</option>
+					{% endfor %}
+				</select>
+				<label for="edit-m-role">Role</label>
+				<select id="edit-member-role" name="edit-m-role">
+					{% for role in roles %}
+						<option value="{{ role|lower }}">{{ role }}</option>
+					{% endfor %}
+				</select>
+				<div class="law">
+					<h3 style="font-weight:bold">120 days law</h3>
+					<input type="radio" id="within-law" name="120-law" value="1">
+					<label for="within-law" style="display:inline-block;">	User is registered within the 120 days law</label><br>
+					<input type="radio" id="without-law" name="120-law" value="0">
+					<label for="without-law" style="display:inline-block;">	User will not be registered within the 120 days law</label><br>
+				</div>
+				<br>
+				<div class="receive-mail" style="width:400px">
+					<div style="display: flex;justify-content: space-between;width: 85px;">
+						<h3>Admin</h3>
+						<h3>Chief</h3>
+					</div>
+					<div style="display: flex;justify-content: space-between; width:68%">
+						<input type="checkbox" id="admin-receive-all" name="receive-all" data-role="administrator">
+						<input type="checkbox" id="chief-receive-all" name="receive-all" data-role="chief">
+						<label for="receive-all" style="display:inline-block;">	Receive all sick leave emails</label>
+					</div>
+					<div style="display: flex;justify-content: space-between;">
+						<input type="checkbox" id="admin-receive-warning" name="receive-warning" data-role="administrator">
+						<input type="checkbox" id="chief-receive-warning" name="receive-warning" data-role="chief">
+						<label for="receive-warning" style="display:inline-block;"> Receive only sick leave emails on day 115 and 120</label>
+					</div>
+				</div>
+				<div class="working-hours">
+					<h1>Working hours</h1>
+					<div style="display: flex;justify-content: space-around;">
+						<div><input type="radio" id="input-dpt-name" class="input-dpt-name" name="toggle-work" value="0"> <div id="dpt-name" style='display:inline-block'></div></div>
+						<div><input type="radio" id="input-spl-hours" class="input-spl-hours" name="toggle-work" value="1"> <div id="spl-hours" style='display:inline-block'>Special Hours</div></div>
+					</div>
+					<table id="edit-wh-table" class="tablesorter w-hours-table">
+						<thead>
+							<tr>
+								<th>Working hours per week</th>
+								<th>Work starts at</th>
+								<th>Register full time sick before</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="sync">
+								<td><input type="checkbox" name="sync-hours" id="sync-hours"><label for="sync-hours">Sync all days</label></td>
+								<td><input type="checkbox" name="sync-work-start" id="sync-work-start"><label for="sync-work-start">Sync all</label></td>
+								<td><input type="checkbox" name="sync-sick-start" id="sync-sick-start"><label for="sync-sick-start">Sync all</label></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Monday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Tuesday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Wednesday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Thursday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr class="work-table-value">
+								<td><div class="work-day">Friday</div><div style="display:inline-flex;text-align:center;"><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-hour" size="2" max="12">Hours</div><div style="display: inline-flex;flex-direction: column;"><input type="number" class="input-minutes" size="2" max="59">Minutes</div></div></td>
+								<td><span><input type="time" class="input-wk-st"></span></td>
+								<td><span><input type="time" class="input-sk-st"></span></td>
+							</tr>
+							<tr>
+								<td colspan="2">Total work day per week</td>
+								<td colspan="1" style="display: flex;justify-content: space-around;align-items: center;"><div style="flex: auto;display: inline-flex;flex-direction: column;align-items: center;"><div id="total-hour">00</div>Hours</div><div style="flex: auto;display: inline-flex;flex-direction: column;align-items: center;"><div id="total-minutes">00</div>Minutes</div></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div>
+					<input type="submit" value="Save">
+					<button type="button" class="cancel-edit">Cancel</button>
+				</div>
+				<div class="loading-gif"></div>
+			</form>
+		</div>
+		<div class="col-1 members-section">
+			<h1>All members</h1>
+			<div class="members-list wrapper">
+				<table id="m-list-table" class="tablesorter">
+					<thead>
+						<tr>
+							<th>User</th>
+							<th>ID number</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for uid, member in members %}
+							{% if member.name %}
+								<tr>
+									{% if member.role == 'administrator' or member.role == 'su admin' %}
+										<td class="border-blue">{{ member.name }}</td>
+									{% elseif member.role == 'chief' %}
+										<td class="border-grey">{{ member.name }}</td>
+									{% else %}
+										<td class="border-orange">{{ member.name }}</td>
+									{% endif %}
+
+									<td>{{ member.id_number }}</td>
+									<td>
+									  {% if member.special_hours %}
+											<img class="clock-icon special-hour" src="{{base_url}}/modules/custom/lm_custom/images/clock_icon.png" width="12" data-user-id="{{ uid }}" data-member="{{ member|json_encode }}">
+										{% endif %}
+										<img class="edit-icon edit-member" src="{{base_url}}/modules/custom/lm_custom/images/edit_icon.png" width="12" data-user-id="{{ uid }}" data-dpt="{{ departments|json_encode }}" data-member="{{ member|json_encode }}">
+										<img class="delete-icon delete-member" src="{{base_url}}/modules/custom/lm_custom/images/delete_icon.png" width="12" data-user-id="{{ uid }}">
+									</td>
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

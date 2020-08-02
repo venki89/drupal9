@@ -1,0 +1,17 @@
+<div id="user-settings-page" class="user-settings-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}"
+	<input id="user-id" type="hidden" value="{{ user_id }}"
+	<div>
+		<h1>My Settings</h1>
+		<form name="user-form" method="post" action="#">
+			<label for="user-email">Email</label>
+			<input type="email" id="user-email" name="user-email" class="user-email">
+			<label for="new-password">New password</label>
+			<input type="password" id="new-password" name="new-password" class="new-password">
+			<label for="confirm-password">Confirm password</label>
+			<input type="password" id="confirm-password" name="confirm-password" class="confirm-password">
+			<input type="submit" value="Save" style="display:block; margin:0 auto;">
+			<div class="loading-gif"></div>
+		</form>
+	</div>
+</div>

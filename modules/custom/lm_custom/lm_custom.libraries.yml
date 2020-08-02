@@ -1,0 +1,16 @@
+departments-page:
+  version: 1.x
+  css:
+    theme:
+      css/lm-custom.css: {}
+      css/barchart.css: {}
+      css/theme.default.css: {}
+  js:
+    js/lm-custom.js: {}
+    js/barchart.jquery.js: {}
+    js/jquery.tablesorter.min.js: {}
+    js/jquery.tablesorter.widgets.min.js: {}
+  dependencies:
+    - core/jquery
+#    - core/drupal
+    - core/jquery.ui.dialog

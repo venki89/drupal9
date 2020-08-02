@@ -1,0 +1,39 @@
+<div id="front-page" class="front-page">
+	<input id="base-url" type="hidden" value="{{ base_url }}">
+	<input id="members" type="hidden" value="{{ members|json_encode }}">
+	<div class="front-container">
+		<div class="front-header">
+			<h1>Good Morning {{ current_user }}</h1>
+		</div>
+		<div class="col-2 fp-user-data">
+			<table id="fp-user-table" class="tablesorter">
+				<thead>
+					<tr>
+						<th>User</th>
+						<th>ID number</th>
+						<th>Department</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for member in members|sort %}
+						<tr>
+							{% if member.role == 'administrator' %}
+								<td class="border-blue ag-user">{{ member.name }}</td>
+							{% elseif member.role == 'chief' %}
+								<td class="border-grey ag-user">{{ member.name }}</td>
+							{% else %}	
+								<td class="border-orange ag-user">{{ member.name }}</td>
+							{% endif %}	
+
+							<td>{{ member.id_number }}</td>
+							<td>{{ member.department }}</td>
+							<td class="{{member.status == 'Sick' ? 'highlight-sick' : 'highlight-healthy'}}">{{ member.status }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="loading-gif"></div>
+</div>

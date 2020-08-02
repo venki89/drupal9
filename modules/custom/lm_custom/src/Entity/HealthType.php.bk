@@ -1,0 +1,84 @@
+<?php
+namespace Drupal\lm_custom\Entity;
+use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+
+/**
+ * Defines the Health Type entity. A configuration entity used to manage
+ * bundles for the health entity.
+ *
+ * @ConfigEntityType(
+ *   id = "lm_custom_health_type",
+ *   label = @Translation("Health Type"),
+ *   bundle_of = "lm_custom_health",
+ *   entity_keys = {
+ *     "id" = "id",
+ *     "label" = "label",
+ *     "uuid" = "uuid",
+ *   },
+ *   config_prefix = "lm_custom_health_type",
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "description",
+ *   },
+ *   handlers = {
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "list_builder" = "Drupal\lm_custom\HealthTypeListBuilder",
+ *     "form" = {
+ *       "default" = "Drupal\lm_custom\Form\HealthTypeForm",
+ *       "add" = "Drupal\lm_custom\Form\HealthTypeForm",
+ *       "edit" = "Drupal\lm_custom\Form\HealthTypeForm",
+ *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
+ *     },
+ *     "route_provider" = {
+ *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
+ *     },
+ *   },
+ *   admin_permission = "administer health types",
+ *   links = {
+ *     "canonical" = "/admin/structure/lm_custom_health_type/{lm_custom_health_type}",
+ *     "add-form" = "/admin/structure/lm_custom_health_type/add",
+ *     "edit-form" = "/admin/structure/lm_custom_health_type/{lm_custom_health_type}/edit",
+ *     "delete-form" = "/admin/structure/lm_custom_health_type/{lm_custom_health_type}/delete",
+ *     "collection" = "/admin/structure/lm_custom_health_type",
+ *   }
+ * )
+ */
+class HealthType extends ConfigEntityBundleBase {
+	/**
+	 * The machine name of the health type.
+	 *
+	 * @var string
+	 */
+	protected $id;
+	
+	/**
+	 * The human-readable name of the health type.
+	 *
+	 * @var string
+	 */
+	protected $label;
+	
+	/**
+	 * A brief description of the health type.
+	 *
+	 * @var string
+	 */
+	protected $description;
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setDescription($description) {
+		$this->description = $description;
+		return $this;
+	}
+	
+}
